@@ -3,10 +3,72 @@
 <head>
 <meta charset="UTF-8">
 <title>50_api_doc</title>
+<link rel="stylesheet" href="css/pub.css">
+<script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
+<script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+<script src="js/pub.js"></script>
+<!-- <script src="js/api_doc_pub.js"></script> -->
+<!-- <script src="data/subject.js"></script> -->
 </head>
 <body>
 <div id="api_doc">
+	<table id="layout_table" cellpadding="0" cellspacing="0">
+		<tr>
+			<td class="layout_table_left_td" valign="top">
+				<ul>
+					<li v-for="文档分类 in projectData.文档分类">
+						<h3>{{ 文档分类.分类名称 }}</h3>
+						<ul>
+							<li v-for="接口定义 in 文档分类.接口定义"><a :href="'#' + 接口定义.接口路径" @click.stop="switchDoc">{{ 接口定义.接口中文名称 }}</a></li>
+						</ul>
 
+					</li>
+				</ul>
+			</td>
+			<td class="layout_table_right_td" valign="top">
+				<h2 id="doc_title">{{ thisApiData.接口中文名称 }}</h2>
+				<div id="doc_header">
+					<div><strong>请求URL:</strong> {{ thisApiData.请求URL }}</div>
+					<div><strong>请求方式:</strong> POST</div>
+				</div>
+				<div id="doc_parameter_in" class="doc_parameter">
+					<div><strong>请求参数:</strong></div>
+					<table border="0" cellpadding="0" cellspacing="0">
+						<tr>
+							<th>参数名</th>
+							<th>必选</th>
+							<th>类型</th>
+							<th>说明</th>
+						</tr>
+						<tr v-for="请求参数 in thisApiData.请求参数">
+							<td>{{ 请求参数.参数名 }}</td>
+							<td align="center">{{ 请求参数.必选 }}</td>
+							<td align="center">{{ 请求参数.类型 }}</td>
+							<td>{{ 请求参数.说明 }}</td>
+						</tr>
+					</table>
+				</div>
+				<div id="doc_parameter_out" class="doc_parameter">
+					<div><strong>返回参数:</strong></div>
+					<table border="0" cellpadding="0" cellspacing="0">
+						<tr>
+							<th>参数名</th>
+							<th>必选</th>
+							<th>类型</th>
+							<th>说明</th>
+						</tr>
+						<tr v-for="返回参数 in thisApiData.返回参数">
+							<td>{{ 返回参数.参数名 }}</td>
+							<td align="center">{{ 返回参数.必选 }}</td>
+							<td align="center">{{ 返回参数.类型 }}</td>
+							<td>{{ 返回参数.说明 }}</td>
+						</tr>
+					</table>
+				</div>
+			</td>
+		</tr>
+	</table>
 </div>
+<script src="js/api_doc.js"></script>
 </body>
 </html>
