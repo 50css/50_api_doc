@@ -102,6 +102,7 @@ var vm = new Vue({
 		},
 		switchDoc: function(event) {
 			var self = this;
+			if(event.target.parentNode.classNane == 'on')return;
 			setTimeout(function (){
 				self.thisApiPath = location.hash.substr(1);
 				self.setTheApiData();
