@@ -28,6 +28,7 @@ var vm = new Vue({
 			var thisCategory = this.projectData.文档分类[this.thisCategoryIndex];
 			var thisApi = thisCategory['接口定义'][this.thisApiIndex];
 			//获取 接口路径 与 接口中文名称
+
 			if(data['接口路径'] == undefined)data['接口路径'] = thisApi['接口路径'];
 			if(data['请求URL'] == undefined)data['请求URL'] = this.projectData.接口URL前缀  + thisCategory.接口URL前缀  + data['接口路径'];
 
@@ -35,6 +36,11 @@ var vm = new Vue({
 			var 请求参数 = this.projectData.公共的请求参数;
 			if(thisCategory.公共的请求参数 != undefined) 请求参数 = 请求参数.concat(thisCategory.公共的请求参数);//合并分类的公共请求参数
 			请求参数 = 请求参数.concat(data.请求参数);//合并业务请求参数
+
+			for (let i = 0; i < 请求参数.length; i++) {
+				if(请求参数[i]['测试值'] == undefined)请求参数[i]['测试值'] = '';
+				if(请求参数[i]['说明'] == undefined)请求参数[i]['说明'] = '';
+			}
 
 			var 最终请求参数 = [];
 			if(data.排除的请求参数){
@@ -56,6 +62,8 @@ var vm = new Vue({
 
 			return data;
 		},
+
+		//设置当前接口文档数据
 		setTheApiData : function(){
 			//console.log('setTheApiData');
 			document.title = this.projectData.项目名称;
@@ -100,6 +108,8 @@ var vm = new Vue({
 			//axios end
 
 		},
+
+		//切换接口文档
 		switchDoc: function(event) {
 			var self = this;
 			if(event.target.parentNode.classNane == 'on')return;
@@ -108,5 +118,30 @@ var vm = new Vue({
 				self.setTheApiData();
 			},20);
 		},
+
+		//接口测试表单被提交
+		apiTestSubmit: function (event){
+			// var form = event.target;
+			// event.returnValue = false;
+			// console.log('接口测试表单被提交');
+
+			// var parameter = {};
+			// for (let i = 0; i < form.length; i++) {
+			// 	if(form[i].type != 'sbumit')parameter[form[i].name] = form[i].value;
+			// }
+
+			// // 用axios将接口测试表单数据提交 form.action
+			// axios.post('http://localhost:8111/1.php',{parameter})
+			// 	.then((response) => {
+			// 		document.querySelector('#api_test_return textarea').value = response.data;
+			// 	}).catch(function (error) {
+			// 		console.log('用axios将接口测试表单数据提交 出错');
+			// 		console.log(error);
+			// 		console.log(error.response.data);
+			// 		console.log(error.response);
+			// 		document.getElementById('errorBox').innerHTML = error.response.data;
+			// 	});
+			// //axios end
+		}
 	}
 });

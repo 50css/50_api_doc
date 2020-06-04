@@ -14,12 +14,17 @@
 		<tr>
 			<td class="layout_table_left_td" valign="top">
 				<ul>
+					<li>
+						<h3>附录</h3>
+						<ul>
+							<li><a href="error_code.html" target="_blank">全局错误码</a></li>
+						</ul>
+					</li>
 					<li v-for="文档分类 in projectData.文档分类">
 						<h3>{{ 文档分类.分类名称 }}</h3>
 						<ul>
 							<li v-for="接口定义 in 文档分类.接口定义"><a :href="'#' + 接口定义.接口路径" @click.stop="switchDoc">{{ 接口定义.接口中文名称 }}</a></li>
 						</ul>
-
 					</li>
 				</ul>
 			</td>
@@ -34,12 +39,14 @@
 					<table border="0" cellpadding="0" cellspacing="0">
 						<tr>
 							<th>参数名</th>
+							<th>中文参数名</th>
 							<th>必选</th>
 							<th>类型</th>
 							<th>说明</th>
 						</tr>
 						<tr v-for="请求参数 in thisApiData.请求参数">
 							<td>{{ 请求参数.参数名 }}</td>
+							<td>{{ 请求参数.中文参数名 }}</td>
 							<td align="center">{{ 请求参数.必选 }}</td>
 							<td align="center">{{ 请求参数.类型 }}</td>
 							<td>{{ 请求参数.说明 }}</td>
@@ -51,18 +58,54 @@
 					<table border="0" cellpadding="0" cellspacing="0">
 						<tr>
 							<th>参数名</th>
+							<th>中文参数名</th>
 							<th>必选</th>
 							<th>类型</th>
 							<th>说明</th>
 						</tr>
 						<tr v-for="返回参数 in thisApiData.返回参数">
 							<td>{{ 返回参数.参数名 }}</td>
+							<td>{{ 返回参数.中文参数名 }}</td>
 							<td align="center">{{ 返回参数.必选 }}</td>
 							<td align="center">{{ 返回参数.类型 }}</td>
 							<td>{{ 返回参数.说明 }}</td>
 						</tr>
 					</table>
 				</div>
+				<form id="api_test" class="doc_parameter" :action="thisApiData.请求URL" method="POST" @submit="apiTestSubmit" target="_blank">
+					<div><strong>接口测试:</strong></div>
+					<table border="0" cellpadding="0" cellspacing="0">
+						<tr>
+							<th>中文参数名</th>
+							<th>测试值</th>
+							<th>必选</th>
+							<th>类型</th>
+							<th>说明</th>
+						</tr>
+						<tr v-for="请求参数 in thisApiData.请求参数">
+							<td>{{ 请求参数.中文参数名 }}</td>
+							<td><input type="text" :name="请求参数.参数名" :value="请求参数.测试值"></td>
+							<td align="center">{{ 请求参数.必选 }}</td>
+							<td align="center">{{ 请求参数.类型 }}</td>
+							<td>{{ 请求参数.说明 }}</td>
+						</tr>
+						<tr>
+							<td></td>
+							<td colspan="4"><input type="submit" value="提交测试"></td>
+						</tr>
+					</table>
+				</form>
+<!-- 				<div id="api_test_return" class="doc_parameter">
+					<div><strong>接口测试返回结果:</strong></div>
+					<table border="0" cellpadding="0" cellspacing="0">
+						<tr>
+							<td><textarea name="s" cols="90" rows="8"></textarea></td>
+						</tr>
+						<tr>
+							<td id="errorBox"></td>
+						</tr>
+					</table>
+				</div> -->
 			</td>
 		</tr>
 	</table>
