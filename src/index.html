@@ -10,6 +10,7 @@
 </head>
 <body>
 <div id="api_doc">
+	<a href="#" id="editApiDoc">编辑</a>
 	<table id="layout_table" cellpadding="0" cellspacing="0">
 		<tr>
 			<td class="layout_table_left_td" valign="top">
@@ -26,86 +27,135 @@
 							<li v-for="接口定义 in 文档分类.接口定义"><a :href="'#' + 接口定义.接口路径" @click.stop="switchDoc">{{ 接口定义.接口中文名称 }}</a></li>
 						</ul>
 					</li>
+					<li>
+						<h3>其它</h3>
+						<ul>
+							<li><a href="switch_url.html">切换接口网址</a></li>
+						<ul>
+							<li><span class="a" @click="saveToKen()">记住token</span></li>
+						</ul>
+					</li>
 				</ul>
 			</td>
 			<td class="layout_table_right_td" valign="top">
 				<h2 id="doc_title">{{ thisApiData.接口中文名称 }}</h2>
-				<div id="doc_header">
-					<div><strong>请求URL:</strong> {{ thisApiData.请求URL }}</div>
-					<div><strong>请求方式:</strong> POST</div>
+
+
+				<div class="tab">
+					<ul class="tab_title">
+						<li @click="switchTab" class="on">接口定义</li>
+						<li @click="switchTab">接口测试</li>
+						<li @click="switchTab">PHP代码生成</li>
+						<li @click="switchTab">MySql生成</li>
+					</ul>
+					<div class="tab_content">
+						<div class="tab_item show">
+							<div class="doc_header">
+								<div><strong>请求URL:</strong> {{ thisApiData.请求URL }}</div>
+								<div><strong>请求方式:</strong> POST</div>
+							</div>
+							<div class="doc_parameter">
+								<table border="0" cellpadding="0" cellspacing="0">
+									<tr>
+										<td colspan="6" class="doc_parameter_title">请求参数</td>
+									</tr>
+									<tr>
+										<th>参数名</th>
+										<th>参数中文名</th>
+										<th>必选</th>
+										<th>类型</th>
+										<th>最大长度</th>
+										<th>说明</th>
+									</tr>
+									<tr v-for="请求参数 in thisApiData.请求参数">
+										<td>{{ 请求参数.参数名 }}</td>
+										<td>{{ 请求参数.参数中文名 }}</td>
+										<td align="center">{{ 请求参数.必选 }}</td>
+										<td align="center">{{ 请求参数.类型 }}</td>
+										<td align="center">{{ 请求参数.最大长度 }}</td>
+										<td>{{ 请求参数.说明 }}</td>
+									</tr>
+									<tr>
+										<td colspan="6" class="doc_parameter_title">返回参数</td>
+									</tr>
+									<tr>
+										<th>参数名</th>
+										<th>参数中文名</th>
+										<th>必选</th>
+										<th>类型</th>
+										<th>最大长度</th>
+										<th>说明</th>
+									</tr>
+									<tr v-for="返回参数 in thisApiData.返回参数">
+										<td>{{ 返回参数.参数名 }}</td>
+										<td>{{ 返回参数.参数中文名 }}</td>
+										<td align="center">{{ 返回参数.必选 }}</td>
+										<td align="center">{{ 返回参数.类型 }}</td>
+										<td align="center">{{ 返回参数.最大长度 }}</td>
+										<td>{{ 返回参数.说明 }}</td>
+									</tr>
+								</table>
+							</div>
+						</div>
+						<div class="tab_item">
+							<div class="doc_header">
+								<div><strong>请求URL:</strong> {{ thisApiData.请求URL }}</div>
+								<div><strong>请求方式:</strong> POST</div>
+							</div>
+							<form id="api_test" class="doc_parameter" :action="thisApiData.请求URL" method="POST" target="_blank">
+								<table border="0" cellpadding="0" cellspacing="0">
+									<tr>
+										<th>参数中文名</th>
+										<th>测试值</th>
+										<th>必选</th>
+										<th>类型</th>
+										<th>说明</th>
+									</tr>
+									<tr v-for="请求参数 in thisApiData.请求参数">
+										<td>{{ 请求参数.参数中文名 }}</td>
+										<td><input type="text" :name="请求参数.参数名" :value="请求参数.测试值"></td>
+										<td align="center">{{ 请求参数.必选 }}</td>
+										<td align="center">{{ 请求参数.类型 }}</td>
+										<td>{{ 请求参数.说明 }}</td>
+									</tr>
+									<tr>
+										<td></td>
+										<td colspan="4">
+											<input type="button" name="" value="以ajax方式提交 测试接口" @click="apiTestSubmit">
+											<input type="button" name="" value="以普通表单方式提交 测试接口" onclick="this.form.submit()">
+										</td>
+									</tr>
+								</table>
+							</form>
+							<div id="api_test_return" class="doc_parameter">
+								<div><strong>接口测试返回结果:</strong></div>
+								<table border="0" cellpadding="0" cellspacing="0">
+									<tr>
+										<td id="apiReHtmlBox"></td>
+									</tr>
+									<tr>
+										<td><textarea name="s" cols="90" rows="8"></textarea></td>
+									</tr>
+								</table>
+							</div>
+						</div>
+						<div class="tab_item">
+							<div class="doc_parameter">
+								<div><strong>TP接收代码:</strong></div>
+								<ul>
+									<li v-for="请求参数 in thisApiData.请求参数" v-if="请求参数.参数名 != 'token'">$input['{{ 请求参数.参数名 }}'] = $this->request->post('{{ 请求参数.参数名 }}'); // {{ 请求参数.参数中文名 }}</li>
+								</ul>
+								<div style="padding-top:15px"><strong>TP验证规则:</strong></div>
+								<div v-for="请求参数 in thisApiData.请求参数">{{ 请求参数.验证规则 }}</div>
+							</div>
+						</div>
+						<div class="tab_item">
+							<div class="doc_parameter">
+								<pre>{{ thisApiData.生成sql }}</pre>
+							</div>
+						</div>
+					</div>
 				</div>
-				<div id="doc_parameter_in" class="doc_parameter">
-					<div><strong>请求参数:</strong></div>
-					<table border="0" cellpadding="0" cellspacing="0">
-						<tr>
-							<th>参数名</th>
-							<th>中文参数名</th>
-							<th>必选</th>
-							<th>类型</th>
-							<th>说明</th>
-						</tr>
-						<tr v-for="请求参数 in thisApiData.请求参数">
-							<td>{{ 请求参数.参数名 }}</td>
-							<td>{{ 请求参数.中文参数名 }}</td>
-							<td align="center">{{ 请求参数.必选 }}</td>
-							<td align="center">{{ 请求参数.类型 }}</td>
-							<td>{{ 请求参数.说明 }}</td>
-						</tr>
-					</table>
-				</div>
-				<div id="doc_parameter_out" class="doc_parameter">
-					<div><strong>返回参数:</strong></div>
-					<table border="0" cellpadding="0" cellspacing="0">
-						<tr>
-							<th>参数名</th>
-							<th>中文参数名</th>
-							<th>必选</th>
-							<th>类型</th>
-							<th>说明</th>
-						</tr>
-						<tr v-for="返回参数 in thisApiData.返回参数">
-							<td>{{ 返回参数.参数名 }}</td>
-							<td>{{ 返回参数.中文参数名 }}</td>
-							<td align="center">{{ 返回参数.必选 }}</td>
-							<td align="center">{{ 返回参数.类型 }}</td>
-							<td>{{ 返回参数.说明 }}</td>
-						</tr>
-					</table>
-				</div>
-				<form id="api_test" class="doc_parameter" :action="thisApiData.请求URL" method="POST" @submit="apiTestSubmit" target="_blank">
-					<div><strong>接口测试:</strong></div>
-					<table border="0" cellpadding="0" cellspacing="0">
-						<tr>
-							<th>中文参数名</th>
-							<th>测试值</th>
-							<th>必选</th>
-							<th>类型</th>
-							<th>说明</th>
-						</tr>
-						<tr v-for="请求参数 in thisApiData.请求参数">
-							<td>{{ 请求参数.中文参数名 }}</td>
-							<td><input type="text" :name="请求参数.参数名" :value="请求参数.测试值"></td>
-							<td align="center">{{ 请求参数.必选 }}</td>
-							<td align="center">{{ 请求参数.类型 }}</td>
-							<td>{{ 请求参数.说明 }}</td>
-						</tr>
-						<tr>
-							<td></td>
-							<td colspan="4"><input type="submit" value="提交测试"></td>
-						</tr>
-					</table>
-				</form>
-<!-- 				<div id="api_test_return" class="doc_parameter">
-					<div><strong>接口测试返回结果:</strong></div>
-					<table border="0" cellpadding="0" cellspacing="0">
-						<tr>
-							<td><textarea name="s" cols="90" rows="8"></textarea></td>
-						</tr>
-						<tr>
-							<td id="errorBox"></td>
-						</tr>
-					</table>
-				</div> -->
 			</td>
 		</tr>
 	</table>

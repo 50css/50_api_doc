@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>切换接口域名</title>
+<script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
+<link rel="stylesheet" href="css/pub.css">
+</head>
+<body style="padding:15px">
+<h3>切换接口域名</h3>
+<div id="app">
+	<ul>
+		<li v-for="url in urlList"><span class="a" @click="go(url.url)">切换到{{ url.name }}</span></li>
+	</ul>
+</div>
+</body>
+</html>
+<script>
+var vm = new Vue({
+	el: '#app',
+	data: {
+		urlList :[
+			{url : 'http://localhost:8111/index.php/', name : '本机环境'},
+			{url : 'http://www.xxx.com/index.php/', name : '外网环境'},
+			{url : 'http://30.30.101.17:8111/index.php/', name : '局域网环境'},
+		],
+	},
+
+	// created 是vue钩子 当本vue实例创建时此方法被调用 (用来进行一些初始化 )
+	created : function (){
+
+	},
+	methods: {
+		go : function(url){
+			localStorage.setItem('接口域名',url);
+			alert('切换接口域名为 ' + url + ' 成功');//，返回上一页之后请刷新一下
+			history.back();
+		}
+	}
+});
+console.log(document.referrer);
+</script>
