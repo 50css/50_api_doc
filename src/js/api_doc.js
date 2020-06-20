@@ -23,9 +23,6 @@ var vm = new Vue({
 			.then((response) => {
 				this.projectData = response.data;
 				this.setTheApiData();
-			}).catch(function (error) {
-				console.log('加载项目数据 出错');
-				console.log(error);
 			});
 		//axios end
 
@@ -181,6 +178,10 @@ var vm = new Vue({
 				console.log('projectData 不是正确的json');
 				return;
 			}
+			if(this.thisApiPath == '#' )return;
+			if(this.thisApiPath == ''){
+				this.thisApiPath = this.projectData.文档分类[0].接口定义[0]['接口路径'];
+			}
 			for (let i = 0; i < this.projectData.文档分类.length; i++) {
 				for (let j = 0; j < this.projectData.文档分类[i].接口定义.length; j++) {
 					//console.log(this.projectData.文档分类[i].接口定义[j]['接口路径'],this.thisApiPath);
@@ -197,7 +198,6 @@ var vm = new Vue({
 					}
 				}
 			}
-
 			//axios start
 			axios.get('data/admin/' + this.thisApiPath + '.js',{headers: {'Content-Type': 'application/json'}})
 				.then((response) => {
@@ -220,10 +220,6 @@ var vm = new Vue({
 					}
 
 					this.toSessionSave();//恢复上次记忆的状态 滚屏到上次滚屏的位置和切换到上次的选项卡
-				})
-				.catch(function (error) {
-					console.log('加载当前接口文档数据出错');
-					console.log(error);
 				});
 			//axios end
 
